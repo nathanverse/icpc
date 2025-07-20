@@ -34,7 +34,7 @@ func readInput() {
 		isAffectedMap[affectedNode-1] = struct{}{}
 	}
 
-	graph = make(map[int][]int, n) // TODO: check this pre-allocation
+	graph = make(map[int][]int, n)
 	for i := 0; i < n-1; i++ {
 		var x, y int
 		_, err := fmt.Scan(&x, &y)
