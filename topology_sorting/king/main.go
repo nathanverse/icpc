@@ -1,9 +1,7 @@
 package main
 
 import (
-	"container/list"
 	"fmt"
-	llq "github.com/emirpasic/gods/queues/linkedlistqueue"
 	"sort"
 )
 
@@ -68,7 +66,7 @@ func buildSegments(allowedSegmentNum int) (map[int][][]int, error) {
 	}
 
 	// Merge segments
-	for _, segments := range allowedSegments {
+	for r, segments := range allowedSegments {
 		if len(segments) <= 1 {
 			continue
 		}
@@ -85,8 +83,10 @@ func buildSegments(allowedSegmentNum int) (map[int][][]int, error) {
 			}
 
 			mergedSegments = append(mergedSegments, segments[i])
-			lastSegment = mergedSegments[len(segments)-1]
+			lastSegment = mergedSegments[len(mergedSegments)-1]
 		}
+
+		allowedSegments[r] = mergedSegments
 	}
 
 	return allowedSegments, nil
@@ -98,6 +98,15 @@ func isAllowed(point Point, allowedSegments map[int][][]int) bool {
 		return false
 	}
 
+	idx := sort.Search(len(segments), func(i int) bool {
+		return segments[i][0] > point.y
+	})
+
+	if idx == 0 {
+		return false
+	}
+
+	return point.y >= segments[idx-1][0] && point.y <= segments[idx-1][1]
 }
 
 func main() {
@@ -122,12 +131,41 @@ func main() {
 		return
 	}
 
-	d := make(map[Point]int)
-	q := llq.New()
-	q.Enqueue(start)
-	for !q.Empty() {
-		visitedNode, _ := q.Dequeue()
-		visitedPoint, _ := visitedNode.(*Point)
-		pushAllowedCells(visitedPoint, allowedSegments)
+	if !isAllowed(*start, allowedSegments) || !isAllowed(*des, allowedSegments) {
+		fmt.Print(-1)
+		return
 	}
+
+	d := make(map[Point]int)
+	q := []*Point{start}
+
+	d[*start] = 0
+	moveCoors := [][]int{{1, 0}, {1, -1}, {1, 1}, {0, 1}, {0, -1}, {-1, 0}, {-1, -1}, {-1, +1}}
+	for len(q) > 0 {
+		visitedPoint := q[0]
+		q = q[1:]
+
+		// Generate all moves of the king
+		for _, coor := range moveCoors {
+			nextPoint := &Point{visitedPoint.x + coor[0], visitedPoint.y + coor[1]}
+			if !isAllowed(*nextPoint, allowedSegments) {
+				continue
+			}
+
+			if _, ok := d[*nextPoint]; ok {
+				continue
+			}
+
+			d[*nextPoint] = d[*visitedPoint] + 1
+			q = append(q, nextPoint)
+
+			// Check if we reach the des move
+			if nextPoint.x == des.x && nextPoint.y == des.y {
+				fmt.Print(d[*nextPoint])
+				return
+			}
+		}
+	}
+
+	fmt.Print(-1)
 }
