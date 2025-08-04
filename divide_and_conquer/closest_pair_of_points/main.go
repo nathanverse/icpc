@@ -13,16 +13,12 @@ func disc(p1, p2 []int) float64 {
 	dy := float64(p1[1] - p2[1])
 	dist := math.Sqrt(dx*dx + dy*dy)
 
-	// This check is part of the problem's specific requirement.
-	// Keep it if it's strictly necessary for problem constraints.
 	if dist > MAX_DIST {
 		return MAX_DIST
 	}
 	return dist
 }
 
-// Solve finds the closest pair of points in the given range [l, r] of the points slice.
-// The points slice is assumed to be sorted by X-coordinate.
 func Solve(points [][]int, l, r int) float64 {
 	numPoints := r - l + 1
 
