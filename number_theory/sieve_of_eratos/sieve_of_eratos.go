@@ -14,25 +14,25 @@ func sieveOfEratos(n int) []int {
 	isNotPrime := make([]bool, n+1)
 	isNotPrime[0] = true
 	isNotPrime[1] = true
-	int64n := int64(n)
+	res := make([]int, 0)
 
-	for i := 2; i <= n; i++ {
-		if int64(i*i) > int64n {
-			break
-		}
-
+	i := 2
+	for i*i <= n {
 		if !isNotPrime[i] {
+			res = append(res, i)
 			for j := i * i; j <= n; j += i {
 				isNotPrime[j] = true
 			}
 		}
+
+		i++
 	}
 
-	res := make([]int, 0)
-	for i := 0; i <= n; i++ {
+	for i <= n {
 		if !isNotPrime[i] {
 			res = append(res, i)
 		}
+		i++
 	}
 
 	return res
