@@ -11,7 +11,7 @@ package queen_board
 //	boardValues [][]int
 //)
 //
-//func main() {
+//func main.go() {
 //	boardValues = make([][]int, 8)
 //	for i := 0; i < 8; i++ {
 //		boardValues[i] = make([]int, 8)
