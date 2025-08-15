@@ -39,6 +39,9 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Split(bufio.ScanWords)
 
+	buf := make([]byte, 0, 2_000_000)
+	scanner.Buffer(buf, 2_000_000)
+
 	scanner.Scan()
 	nWord := scanner.Text()
 
