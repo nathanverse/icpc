@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"math"
 )
 
 // smallPowerMod calculates (a^b) % m using binary exponentiation (a.k.a. exponentiation by squaring).
@@ -50,10 +50,42 @@ func superPowerMod(a int, b []int) int {
 	return res
 }
 
-func main() {
-	a := 2
-	b := []int{1, 0} // Represents the number 123
+func factorial(n int) int {
+	if n == 0 || n == 1 {
+		return 1
+	}
+	return n * factorial(n-1)
+}
 
-	result := superPowerMod(a, b)
-	fmt.Printf("%d\n", result) // Correct output is 2^123 mod 1337
+// The boggle game
+func probabilityToDestination(originalSigns, detectedSigns []rune) float64 {
+	minusCount, plusCount, totalMissingCount := 0, 0, 0
+	for i, v := range detectedSigns {
+		if v == '?' {
+			if originalSigns[i] == '+' {
+				plusCount++
+			} else {
+				minusCount++
+			}
+
+			totalMissingCount++
+		}
+
+		continue
+	}
+
+	totalCombinations := math.Pow(2, float64(totalMissingCount))
+	possibleCombinations := factorial(totalMissingCount) / (factorial(minusCount) * factorial(plusCount))
+
+	return float64(possibleCombinations) / totalCombinations
+}
+
+func main() {
+	//a := 2
+	//b := []int{1, 0} // Represents the number 123
+	//
+	//result := superPowerMod(a, b)
+	//fmt.Printf("%d\n", result) // Correct output is 2^123 mod 1337
+
+	probabilityToDestination([]rune{'+', '-', '+', '-'}, []rune{'+', '-', '?', '?'})
 }
